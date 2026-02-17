@@ -1,0 +1,49 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    overflow: hidden; /* Evita el scroll para que el canvas sea fijo */
+    background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#connection-panel {
+    background: white;
+    padding: 15px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+    text-align: center;
+}
+
+#toolbar {
+    margin: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    background: #333;
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: white;
+}
+
+#pizarra {
+    background: white;
+    cursor: crosshair;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border: 1px solid #ccc;
+    touch-action: none; /* Importante para que funcione en móviles/tablets */
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: none;
+    background: #007bff;
+    color: white;
+    transition: 0.3s;
+}
+
+button:hover { background: #0056b3; }
