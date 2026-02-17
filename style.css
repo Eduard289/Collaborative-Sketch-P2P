@@ -1,49 +1,17 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    overflow: hidden; /* Evita el scroll para que el canvas sea fijo */
-    background-color: #f0f2f5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#connection-panel {
-    background: white;
-    padding: 15px;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    z-index: 10;
-    text-align: center;
-}
-
-#toolbar {
-    margin: 10px;
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    background: #333;
-    padding: 10px 20px;
-    border-radius: 50px;
-    color: white;
-}
-
-#pizarra {
-    background: white;
-    cursor: crosshair;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    border: 1px solid #ccc;
-    touch-action: none; /* Importante para que funcione en móviles/tablets */
-}
-
-button {
-    cursor: pointer;
-    padding: 5px 15px;
-    border-radius: 5px;
-    border: none;
-    background: #007bff;
-    color: white;
-    transition: 0.3s;
-}
-
-button:hover { background: #0056b3; }
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f7f6; display: flex; flex-direction: column; height: 100vh; }
+#connection-panel { background: #fff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+.user-config { margin-bottom: 10px; }
+.user-config input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+#main-container { display: flex; flex: 1; overflow: hidden; }
+#canvas-area { flex: 3; display: flex; flex-direction: column; }
+#pizarra { background: white; flex: 1; cursor: crosshair; margin: 10px; border-radius: 8px; border: 1px solid #ddd; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
+#chat-area { flex: 1; background: #fff; border-left: 1px solid #ddd; display: flex; flex-direction: column; min-width: 300px; }
+#chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #fafafa; }
+#chat-input-area { padding: 10px; display: flex; border-top: 1px solid #eee; gap: 5px; }
+footer { background: #2c3e50; color: #fff; text-align: center; padding: 10px; font-size: 0.85em; }
+.msg { margin-bottom: 10px; padding: 8px; border-radius: 6px; background: #fff; border: 1px solid #eee; font-size: 0.9em; }
+.msg.me { background: #dcf8c6; border-color: #c7e5ae; align-self: flex-end; }
+#toolbar { background: #2c3e50; color: white; padding: 10px; display: flex; gap: 15px; justify-content: center; align-items: center; }
+hr { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
+button { padding: 8px 15px; border-radius: 4px; border: none; background: #3498db; color: white; cursor: pointer; font-weight: 600; }
+button:hover { background: #2980b9; }
