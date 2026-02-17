@@ -5,68 +5,52 @@ const peerIdInput = document.getElementById('peer-id-input');
 const connectBtn = document.getElementById('connect-btn');
 const statusMsg = document.getElementById('connection-status');
 
-// Configuración inicial del Canvas
-canvas.width = window.innerWidth * 0.9;
-canvas.height = window.innerHeight * 0.7;
-ctx.lineCap = 'round';
-ctx.lineJoin = 'round';
+// AJUSTE CRÍTICO: Tamaño real sin estiramientos
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 let drawing = false;
-let peer;
+let lastX = 0;
+let lastY = 0;
+let peer = new Peer();
 let conn;
 
-// 1. Inicializar PeerJS
-peer = new Peer(); // PeerJS genera un ID automático
+peer.on('open', (id) => myIdDisplay.innerText = id);
 
-peer.on('open', (id) => {
-    myIdDisplay.innerText = id;
-});
-
-// 2. Escuchar conexiones entrantes (Cuando Madrid llama a Barcelona)
 peer.on('connection', (connection) => {
     conn = connection;
     setupConnection();
 });
 
-// 3. Función para conectar a otro (Cuando Barcelona llama a Madrid)
 connectBtn.addEventListener('click', () => {
-    const peerId = peerIdInput.value;
-    conn = peer.connect(peerId);
+    conn = peer.connect(peerIdInput.value);
     setupConnection();
 });
 
 function setupConnection() {
     conn.on('open', () => {
         statusMsg.innerText = "Estado: ¡CONECTADO!";
-        statusMsg.style.color = "green";
+        statusMsg.style.color = "#28a745";
     });
-
-    // Recibir datos de dibujo
     conn.on('data', (data) => {
-        if (data.type === 'draw') {
-            remoteDraw(data);
-        } else if (data.type === 'clear') {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        if (data.type === 'draw') remoteDraw(data);
+        if (data.type === 'clear') ctx.clearRect(0, 0, canvas.width, canvas.height);
     });
 }
 
-// 4. Lógica de Dibujo
-canvas.addEventListener('mousedown', startDrawing);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', stopDrawing);
-
-function startDrawing(e) {
+// LÓGICA DE DIBUJO REFINADA
+canvas.addEventListener('mousedown', (e) => {
     drawing = true;
-    draw(e);
-}
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
 
-function stopDrawing() {
-    drawing = false;
-    ctx.beginPath();
-}
-
-function draw(e) {
+canvas.addEventListener('mousemove', (e) => {
     if (!drawing) return;
 
     const x = e.offsetX;
@@ -74,46 +58,45 @@ function draw(e) {
     const color = document.getElementById('color-picker').value;
     const size = document.getElementById('size-picker').value;
 
-    ctx.lineWidth = size;
-    ctx.strokeStyle = color;
+    localDraw(lastX, lastY, x, y, color, size);
 
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-
-    // Enviar coordenadas al otro usuario
     if (conn && conn.open) {
         conn.send({
             type: 'draw',
-            x: x,
-            y: y,
+            x1: lastX, y1: lastY,
+            x2: x, y2: y,
             color: color,
-            size: size,
-            isNewPath: false
+            size: size
         });
     }
-}
+    [lastX, lastY] = [x, y];
+});
 
-function remoteDraw(data) {
-    ctx.lineWidth = data.size;
-    ctx.strokeStyle = data.color;
-    ctx.lineTo(data.x, data.y);
-    ctx.stroke();
+canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('mouseout', () => drawing = false);
+
+function localDraw(x1, y1, x2, y2, color, size) {
     ctx.beginPath();
-    ctx.moveTo(data.x, data.y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = size;
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.closePath();
 }
 
-// Limpiar pizarra
+function remoteDraw(d) {
+    localDraw(d.x1, d.y1, d.x2, d.y2, d.color, d.size);
+}
+
 document.getElementById('clear-btn').addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (conn && conn.open) conn.send({ type: 'clear' });
 });
 
-// Guardar como imagen
 document.getElementById('save-btn').addEventListener('click', () => {
     const link = document.createElement('a');
-    link.download = 'pizarra.png';
+    link.download = 'pizarra-p2paint.png';
     link.href = canvas.toDataURL();
     link.click();
 });
