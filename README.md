@@ -12,3 +12,5 @@ Equipos de Desarrollo y UX: Para realizar sesiones de brainstorming o flujos de 
 Educación Remota: Facilitando a tutores la explicación de conceptos visuales sin herramientas pesadas.
 
 Privacidad Total: Al no existir un servidor intermedio, no hay registros de los dibujos en ninguna base de datos externa.
+
+El proyecto destaca por su arquitectura Serverless, lo que permite su despliegue instantáneo en servicios estáticos como GitHub Pages. Con funcionalidades integradas como exportación en PNG y herramientas de personalización de trazo, Collaborative-Sketch-P2P demuestra cómo las APIs modernas del navegador pueden sustituir arquitecturas complejas de servidor por soluciones elegantes y eficientes en el cliente.
